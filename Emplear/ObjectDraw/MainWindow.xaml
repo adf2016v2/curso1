@@ -1,0 +1,141 @@
+﻿<Window x:Class="ObjectDraw.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ObjectDraw"
+        mc:Ignorable="d"
+        Title="" Height="600" Width="1000"
+        Loaded="Windows_Loaded"
+        xmlns:converter="clr-namespace:ObjectDraw.Figuras"
+        WindowStartupLocation="CenterScreen">
+  <Window.Resources>
+    <converter:FiguraConverter x:Key="FiguraConverter"></converter:FiguraConverter>
+    <converter:FiguraSelector x:Key="FiguraSelector"></converter:FiguraSelector>
+
+    <DataTemplate x:Key="RectTemplate">
+      <StackPanel Orientation="Horizontal">
+        <Viewbox Margin="5, 10">
+          <Rectangle Stroke="Aqua" StrokeThickness="5" Width="200" Height="150" Name="miniRect"></Rectangle>
+        </Viewbox>
+        <TextBlock Margin="10" VerticalAlignment="Center" Text="{Binding Converter={StaticResource FiguraConverter}}"></TextBlock>
+      </StackPanel>
+
+      <DataTemplate.Triggers>
+        <DataTrigger 
+          Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ComboBox}}, Path=DependencyObjectType.Name}" 
+          Value="ComboBox">
+          <Setter Property="StackPanel.Height" Value="40"></Setter>
+          <Setter TargetName="miniRect" Property="Stroke" Value="Black"></Setter>
+        </DataTrigger>
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition 
+              Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ComboBox}}, Path=DependencyObjectType.Name}" 
+              Value="ComboBox">
+            </Condition>
+            <Condition Binding="{Binding Path=Visible}" Value="true">
+            </Condition>
+          </MultiDataTrigger.Conditions>
+          <Setter Property="TextBlock.FontWeight" Value="Bold"></Setter>
+        </MultiDataTrigger>
+      </DataTemplate.Triggers>
+    </DataTemplate>
+
+    <DataTemplate x:Key="LineTemplate">
+      <StackPanel Orientation="Horizontal" >
+        <Viewbox Margin="5, 10">
+          <Line Stroke="DarkOrange" StrokeThickness="5" X1="0" X2="200" Y1="0" Y2="200" Name="miniLine"></Line>
+        </Viewbox>
+        <TextBlock Margin="10" VerticalAlignment="Center" Text="{Binding Converter={StaticResource FiguraConverter}}"></TextBlock>
+      </StackPanel>
+
+      <DataTemplate.Triggers>
+        <DataTrigger 
+          Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ComboBox}}, Path=DependencyObjectType.Name}" 
+          Value="ComboBox">
+          <Setter Property="StackPanel.Height" Value="40"></Setter>
+          <Setter TargetName="miniLine" Property="Stroke" Value="Black"></Setter>
+        </DataTrigger>
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition 
+              Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ComboBox}}, Path=DependencyObjectType.Name}" 
+              Value="ComboBox">
+            </Condition>
+            <Condition Binding="{Binding Path=Visible}" Value="true">
+            </Condition>
+          </MultiDataTrigger.Conditions>
+          <Setter Property="TextBlock.FontWeight" Value="Bold"></Setter>
+        </MultiDataTrigger>
+      </DataTemplate.Triggers>
+    </DataTemplate>
+
+    <DataTemplate x:Key="CircTemplate">
+      <StackPanel Orientation="Horizontal">
+        <Viewbox Margin="5, 10">
+          <Ellipse Stroke="Chartreuse" StrokeThickness="5" Width="200" Height="200" Name="miniCirc"></Ellipse>
+        </Viewbox>
+        <TextBlock Margin="10" VerticalAlignment="Center" Text="{Binding Converter={StaticResource FiguraConverter}}"></TextBlock>
+      </StackPanel>
+      
+      <DataTemplate.Triggers>
+        <DataTrigger 
+          Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ComboBox}}, Path=DependencyObjectType.Name}" 
+          Value="ComboBox">
+          <Setter Property="StackPanel.Height" Value="40"></Setter>
+          <Setter TargetName="miniCirc" Property="Stroke" Value="Black"></Setter>
+        </DataTrigger>
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition 
+              Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ComboBox}}, Path=DependencyObjectType.Name}" 
+              Value="ComboBox">
+            </Condition>
+            <Condition Binding="{Binding Path=Visible}" Value="true">
+            </Condition>
+          </MultiDataTrigger.Conditions>
+          <Setter Property="TextBlock.FontWeight" Value="Bold"></Setter>
+        </MultiDataTrigger>
+      </DataTemplate.Triggers>
+    </DataTemplate>
+
+  </Window.Resources>
+
+  <DockPanel>
+    <StackPanel DockPanel.Dock="Right" Background="CadetBlue" Name="toolPanel" Width="200">
+      <ComboBox Margin="5" 
+                ItemsSource="{Binding Path=Objetos, Mode=TwoWay}" 
+                SelectedItem="{Binding Path=FiguraActual}">
+        <ComboBox.ItemTemplateSelector>
+          <converter:FiguraSelector 
+            RectTemplate="{StaticResource RectTemplate}"
+            CircTemplate="{StaticResource CircTemplate}"
+            LineTemplate="{StaticResource LineTemplate}"
+          ></converter:FiguraSelector>
+        </ComboBox.ItemTemplateSelector>
+      </ComboBox>
+      <Button Margin="5" Padding="5" Content="Mostrar" Command="{Binding Mostrar}"></Button>
+      <Button Margin="5" Padding="5" Content="Ocultar" Command="{Binding Ocultar}"></Button>
+      <Label Content="Nuevo X"></Label>
+      <TextBox Margin="5" Padding="5" Text="{Binding NewX}"></TextBox>
+      <Label Content="Nuevo Y"></Label>
+      <TextBox Margin="5" Padding="5" Text="{Binding NewY}"></TextBox>
+      <Button Margin="5" Padding="5" Content="Mover" Command="{Binding Mover}"></Button>
+      <Button Margin="5" Padding="5" Content="Rellenar" Command="{Binding Rellenar}"></Button>
+    </StackPanel>
+    <Label DockPanel.Dock="Top" Height="50" Foreground="Azure" Background="#FF1E1E1E" Content="{Binding FiguraActual}">
+      <Label.ContentTemplateSelector>
+        <converter:FiguraSelector 
+          RectTemplate="{StaticResource RectTemplate}"
+          CircTemplate="{StaticResource CircTemplate}"
+          LineTemplate="{StaticResource LineTemplate}"
+        ></converter:FiguraSelector>
+      </Label.ContentTemplateSelector>
+    </Label>
+    <Canvas Name="mainArea" >
+    </Canvas>
+  </DockPanel>
+</Window>
+
+  
